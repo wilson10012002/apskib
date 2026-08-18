@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import logo from "../../../assets/images/logo.jpeg"
 
 export default function Hero() {
   return (
@@ -12,6 +13,7 @@ export default function Hero() {
             <span className="hero-label">
               APSKIB • SAMBO & KURASH
             </span>
+            
 
             <h1>
               Disciplina + Organização

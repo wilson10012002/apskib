@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import logo from "../../../assets/images/logo.png"
 
 export default function Footer() {
   return (
@@ -9,15 +10,13 @@ export default function Footer() {
         {/* Brand */}
         <div className="footer-brand">
 
-          <div className="footer-logo">
-            APSKIB
-          </div>
+        
 
-          <h3>
+        <h3>
             Associação Provincial de
             <br />
-            Sambo e Kurash
-          </h3>
+            Sambo e Kurash do Icolo e Bengo
+        </h3>
 
           <p className="footer-slogan">
             Disciplina + Organização = Resultado

@@ -1,10 +1,8 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import {
-  Menu,
-  X,
-  ChevronDown,
-} from 'lucide-react'
+import { Menu, X, ChevronDown } from 'lucide-react'
+
+import logo from '../../../assets/images/logo.jpeg'
 
 const navItems = [
   { label: 'Início', path: '/' },
@@ -18,8 +16,20 @@ const navItems = [
   { label: 'Resultados', path: '/resultados' },
 ]
 
+const moreItems = [
+  { label: 'Ranking', path: '/ranking' },
+  { label: 'Multimédia', path: '/multimedia' },
+  { label: 'Parceiros', path: '/parceiros' },
+  { label: 'Documentos', path: '/documentos' },
+  { label: 'Contactos', path: '/contactos' },
+]
+
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const closeMobileMenu = () => {
+    setMobileOpen(false)
+  }
 
   return (
     <header className="site-header">
@@ -29,20 +39,18 @@ export default function Header() {
         <Link
           to="/"
           className="logo"
-          onClick={() => setMobileOpen(false)}
+          onClick={closeMobileMenu}
         >
-          <div className="logo-mark">
-            APSKIB
-          </div>
-
-          <div className="logo-text">
-            <strong>APSKIB</strong>
-            <span>Sambo & Kurash</span>
-          </div>
+          <img
+            src={logo}
+            alt="APSKIB - Sambo & Kurash"
+            className="logo-image"
+          />
         </Link>
 
-        {/* Desktop navigation */}
+        {/* Desktop Navigation */}
         <nav className="desktop-nav">
+
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -55,37 +63,31 @@ export default function Header() {
             </NavLink>
           ))}
 
+          {/* Mais */}
           <div className="nav-dropdown">
-            <button className="nav-link dropdown-button">
-              Mais
+            <button
+              type="button"
+              className="nav-link dropdown-button"
+            >
+              <span>Mais</span>
               <ChevronDown size={15} />
             </button>
 
             <div className="dropdown-menu">
-              <NavLink to="/ranking">
-                Ranking
-              </NavLink>
-
-              <NavLink to="/multimedia">
-                Multimédia
-              </NavLink>
-
-              <NavLink to="/parceiros">
-                Parceiros
-              </NavLink>
-
-              <NavLink to="/documentos">
-                Documentos
-              </NavLink>
-
-              <NavLink to="/contactos">
-                Contactos
-              </NavLink>
+              {moreItems.map((item) => (
+                <NavLink
+                  key={item.path}
+                  to={item.path}
+                >
+                  {item.label}
+                </NavLink>
+              ))}
             </div>
           </div>
+
         </nav>
 
-        {/* Registration button */}
+        {/* Registration Button */}
         <Link
           to="/inscricao"
           className="registration-button"
@@ -93,11 +95,17 @@ export default function Header() {
           Inscreva-se
         </Link>
 
-        {/* Mobile button */}
+        {/* Mobile Menu Button */}
         <button
+          type="button"
           className="mobile-menu-button"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Abrir menu"
+          onClick={() => setMobileOpen((prev) => !prev)}
+          aria-label={
+            mobileOpen
+              ? 'Fechar menu'
+              : 'Abrir menu'
+          }
+          aria-expanded={mobileOpen}
         >
           {mobileOpen ? (
             <X size={27} />
@@ -105,11 +113,13 @@ export default function Header() {
             <Menu size={27} />
           )}
         </button>
+
       </div>
 
-      {/* Mobile navigation */}
+      {/* Mobile Navigation */}
       {mobileOpen && (
-        <div className="mobile-nav">
+        <nav className="mobile-nav">
+
           {navItems.map((item) => (
             <NavLink
               key={item.path}
@@ -117,52 +127,34 @@ export default function Header() {
               className={({ isActive }) =>
                 `mobile-nav-link ${isActive ? 'active' : ''}`
               }
-              onClick={() => setMobileOpen(false)}
+              onClick={closeMobileMenu}
             >
               {item.label}
             </NavLink>
           ))}
 
-          <NavLink
-            to="/ranking"
-            className="mobile-nav-link"
-            onClick={() => setMobileOpen(false)}
-          >
-            Ranking
-          </NavLink>
+          {/* Mais - Mobile */}
+          {moreItems.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className="mobile-nav-link"
+              onClick={closeMobileMenu}
+            >
+              {item.label}
+            </NavLink>
+          ))}
 
-          <NavLink
-            to="/multimedia"
-            className="mobile-nav-link"
-            onClick={() => setMobileOpen(false)}
-          >
-            Multimédia
-          </NavLink>
-
-          <NavLink
-            to="/documentos"
-            className="mobile-nav-link"
-            onClick={() => setMobileOpen(false)}
-          >
-            Documentos
-          </NavLink>
-
-          <NavLink
-            to="/contactos"
-            className="mobile-nav-link"
-            onClick={() => setMobileOpen(false)}
-          >
-            Contactos
-          </NavLink>
-
+          {/* Mobile Registration */}
           <Link
             to="/inscricao"
             className="mobile-registration-button"
-            onClick={() => setMobileOpen(false)}
+            onClick={closeMobileMenu}
           >
             Inscreva-se
           </Link>
-        </div>
+
+        </nav>
       )}
     </header>
   )
