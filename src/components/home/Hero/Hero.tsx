@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import logo from "../../../assets/images/logo.jpeg"
+
 
 export default function Hero() {
   return (
