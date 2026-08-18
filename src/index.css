@@ -1,0 +1,1451 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Oswald:wght@500;600;700&display=swap');
+
+/* =========================================================
+   ROOT / IDENTIDADE APSKIB
+========================================================= */
+
+:root {
+  /* Cores principais */
+  --blue: #0057a8;
+  --blue-dark: #003b73;
+  --blue-light: #eaf3fb;
+
+  --red: #d71920;
+  --red-dark: #a90f15;
+  --red-light: #fdecee;
+
+  --green: #00843d;
+  --green-dark: #00652f;
+  --green-light: #eaf7f0;
+
+  /* Cores neutras */
+  --white: #ffffff;
+  --black: #111111;
+
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-500: #64748b;
+  --gray-700: #334155;
+  --gray-900: #17202a;
+
+  /* Aliases */
+  --primary: var(--blue);
+  --primary-dark: var(--blue-dark);
+
+  --secondary: var(--red);
+  --success: var(--green);
+
+  /* Tipografia */
+  font-family: 'Montserrat', sans-serif;
+
+  color: var(--black);
+  background: var(--white);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+
+  background: var(--white);
+  color: var(--black);
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.app {
+  min-height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.site-header {
+  width: 100%;
+
+  background: var(--white);
+
+  border-top: 4px solid var(--blue);
+  border-bottom: 1px solid var(--gray-200);
+
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  max-width: 1440px;
+  height: 82px;
+
+  margin: 0 auto;
+  padding: 0 32px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 28px;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.logo {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  flex-shrink: 0;
+}
+
+.logo-mark {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  overflow: hidden;
+
+  background: var(--blue);
+  color: var(--white);
+
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+
+  border-radius: 8px;
+}
+
+/* Barra vermelha do logotipo */
+
+.logo-mark::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 5px;
+
+  background: var(--red);
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-text strong {
+  color: var(--blue);
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: 22px;
+  line-height: 1;
+
+  letter-spacing: 0.5px;
+}
+
+.logo-text span {
+  margin-top: 4px;
+
+  color: var(--gray-500);
+
+  font-size: 9px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.5px;
+}
+
+
+/* =========================================================
+   DESKTOP NAVIGATION
+========================================================= */
+
+.desktop-nav {
+  flex: 1;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+}
+
+.nav-link {
+  padding: 10px 9px;
+
+  color: var(--gray-700);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  transition: 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--blue);
+}
+
+.nav-link.active {
+  color: var(--red);
+}
+
+
+/* =========================================================
+   DROPDOWN
+========================================================= */
+
+.nav-dropdown {
+  position: relative;
+}
+
+.dropdown-button {
+  background: none;
+  border: none;
+
+  display: flex;
+  align-items: center;
+
+  gap: 3px;
+
+  color: var(--gray-700);
+}
+
+.dropdown-menu {
+  position: absolute;
+
+  top: calc(100% + 15px);
+  right: 0;
+
+  min-width: 200px;
+
+  padding: 8px;
+
+  background: var(--white);
+
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+
+  box-shadow:
+    0 12px 35px rgba(0, 0, 0, 0.1);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateY(8px);
+
+  transition: 0.2s ease;
+}
+
+.nav-dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+
+  transform: translateY(0);
+}
+
+.dropdown-menu a {
+  display: block;
+
+  padding: 10px 12px;
+
+  color: var(--gray-700);
+
+  font-size: 13px;
+  font-weight: 500;
+
+  border-radius: 5px;
+}
+
+.dropdown-menu a:hover {
+  background: var(--blue-light);
+
+  color: var(--blue);
+}
+
+
+/* =========================================================
+   BOTÃO DE INSCRIÇÃO
+========================================================= */
+
+.registration-button {
+  padding: 12px 18px;
+
+  background: var(--red);
+  color: var(--white);
+
+  border-radius: 6px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  transition: 0.2s ease;
+}
+
+.registration-button:hover {
+  background: var(--red-dark);
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+========================================================= */
+
+.mobile-menu-button {
+  display: none;
+
+  padding: 5px;
+
+  border: none;
+
+  background: transparent;
+
+  color: var(--blue);
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.site-footer {
+  margin-top: 80px;
+
+  background: var(--blue-dark);
+
+  color: var(--white);
+
+  border-top: 5px solid var(--green);
+}
+
+.footer-container {
+  max-width: 1440px;
+
+  margin: 0 auto;
+
+  padding: 65px 32px;
+
+  display: grid;
+
+  grid-template-columns:
+    1.6fr
+    1fr
+    1fr
+    1.5fr;
+
+  gap: 50px;
+}
+
+
+/* =========================================================
+   FOOTER BRAND
+========================================================= */
+
+.footer-logo {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--red);
+
+  font-family: 'Oswald', sans-serif;
+  font-weight: 700;
+
+  border-radius: 8px;
+
+  margin-bottom: 20px;
+}
+
+.footer-brand h3 {
+  font-family: 'Oswald', sans-serif;
+
+  font-size: 22px;
+
+  line-height: 1.25;
+}
+
+.footer-slogan {
+  margin-top: 18px;
+
+  color: #6fd69b;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   FOOTER COLUMNS
+========================================================= */
+
+.footer-column {
+  display: flex;
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+.footer-column h4 {
+  margin-bottom: 8px;
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: 17px;
+
+  text-transform: uppercase;
+}
+
+.footer-column a {
+  color: var(--gray-300);
+
+  font-size: 13px;
+
+  transition: 0.2s ease;
+}
+
+.footer-column a:hover {
+  color: var(--green);
+}
+
+
+/* =========================================================
+   FOOTER CONTACT
+========================================================= */
+
+.footer-contact p {
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  color: var(--gray-300);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+.footer-contact svg {
+  color: var(--green);
+
+  flex-shrink: 0;
+
+  margin-top: 2px;
+}
+
+
+/* =========================================================
+   FOOTER BOTTOM
+========================================================= */
+
+.footer-bottom {
+  max-width: 1440px;
+
+  margin: 0 auto;
+
+  padding: 22px 32px;
+
+  border-top:
+    1px solid rgba(255, 255, 255, 0.12);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+}
+
+.footer-bottom p {
+  color: #94a3b8;
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   SOCIAL LINKS
+========================================================= */
+
+.social-links {
+  display: flex;
+
+  gap: 8px;
+}
+
+.social-links a {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  border-radius: 50%;
+
+  transition: 0.2s ease;
+}
+
+.social-links a:hover {
+  background: var(--red);
+}
+
+
+/* =========================================================
+   MOBILE NAVIGATION
+========================================================= */
+
+.mobile-nav {
+  display: none;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+  min-height: 650px;
+
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  overflow: hidden;
+
+  color: var(--white);
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 59, 115, 0.98) 0%,
+      rgba(0, 87, 168, 0.92) 45%,
+      rgba(0, 87, 168, 0.65) 100%
+    );
+}
+
+
+/* Faixa inferior com as três cores */
+
+.hero::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 8px;
+
+  background: linear-gradient(
+    to right,
+    var(--red) 0%,
+    var(--red) 33.33%,
+
+    var(--blue) 33.33%,
+    var(--blue) 66.66%,
+
+    var(--green) 66.66%,
+    var(--green) 100%
+  );
+}
+
+.hero-container {
+  width: 100%;
+
+  max-width: 1440px;
+
+  margin: 0 auto;
+
+  padding: 80px 32px;
+}
+
+.hero-content {
+  max-width: 760px;
+}
+
+.hero-label {
+  display: inline-block;
+
+  margin-bottom: 20px;
+
+  color: #8ed8ae;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  margin: 0;
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: clamp(48px, 6vw, 82px);
+
+  font-weight: 700;
+
+  line-height: 1.03;
+
+  text-transform: uppercase;
+}
+
+.hero h1 span {
+  color: #ff4b51;
+}
+
+.hero-content > p {
+  margin-top: 25px;
+
+  font-size: 19px;
+  font-weight: 600;
+
+  line-height: 1.5;
+}
+
+.hero-description {
+  max-width: 650px;
+
+  color: #dbeafe !important;
+
+  font-size: 15px !important;
+  font-weight: 400 !important;
+
+  line-height: 1.8 !important;
+}
+
+
+/* =========================================================
+   HERO BUTTONS
+========================================================= */
+
+.hero-buttons {
+  margin-top: 35px;
+
+  display: flex;
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 12px;
+}
+
+.hero-button {
+  padding: 15px 22px;
+
+  border-radius: 5px;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  transition: 0.2s ease;
+}
+
+
+/* Botão vermelho */
+
+.hero-button.primary {
+  background: var(--red);
+
+  color: var(--white);
+}
+
+.hero-button.primary:hover {
+  background: var(--red-dark);
+
+  transform: translateY(-2px);
+}
+
+
+/* Botão azul/verde */
+
+.hero-button.secondary {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+
+  background: rgba(255, 255, 255, 0.08);
+
+  color: var(--white);
+}
+
+.hero-button.secondary:hover {
+  background: var(--green);
+
+  border-color: var(--green);
+
+  color: var(--white);
+}
+
+.hero-link {
+  margin-left: 10px;
+
+  color: var(--white);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  transition: 0.2s ease;
+}
+
+.hero-link:hover {
+  color: #8ed8ae;
+}
+
+
+/* =========================================================
+   HOME SECTIONS
+========================================================= */
+
+.home-placeholder {
+  min-height: 300px;
+
+  padding: 80px 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--gray-50);
+
+  text-align: center;
+}
+
+.home-placeholder > div {
+  max-width: 700px;
+}
+
+.home-placeholder span {
+  color: var(--red);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.home-placeholder h2 {
+  margin-top: 10px;
+
+  color: var(--blue);
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: 42px;
+
+  text-transform: uppercase;
+}
+
+.home-placeholder p {
+  margin-top: 15px;
+
+  color: var(--gray-500);
+
+  font-size: 15px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   RESPONSIVE — TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+  .desktop-nav {
+    gap: 0;
+  }
+
+  .nav-link {
+    padding: 9px 6px;
+
+    font-size: 11px;
+  }
+
+  .header-container {
+    gap: 15px;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE NAV
+========================================================= */
+
+@media (max-width: 1050px) {
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .registration-button {
+    margin-left: auto;
+  }
+
+  .mobile-menu-button {
+    display: flex;
+  }
+}
+
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+========================================================= */
+
+@media (max-width: 768px) {
+
+  /* Header */
+
+  .header-container {
+    height: 72px;
+
+    padding: 0 18px;
+  }
+
+  .logo-mark {
+    width: 42px;
+    height: 42px;
+
+    font-size: 11px;
+  }
+
+  .logo-text strong {
+    font-size: 19px;
+  }
+
+  .logo-text span {
+    font-size: 8px;
+  }
+
+  .registration-button {
+    display: none;
+  }
+
+
+  /* Mobile navigation */
+
+  .mobile-nav {
+    display: flex;
+
+    flex-direction: column;
+
+    padding: 10px 18px 20px;
+
+    background: var(--white);
+
+    border-top: 1px solid var(--gray-100);
+  }
+
+  .mobile-nav-link {
+    padding: 14px 5px;
+
+    border-bottom:
+      1px solid var(--gray-100);
+
+    color: var(--gray-700);
+
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .mobile-nav-link.active {
+    color: var(--red);
+  }
+
+  .mobile-registration-button {
+    margin-top: 15px;
+
+    padding: 14px;
+
+    background: var(--red);
+
+    color: var(--white);
+
+    text-align: center;
+
+    border-radius: 6px;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+  }
+
+
+  /* Hero */
+
+  .hero {
+    min-height: 600px;
+  }
+
+  .hero-container {
+    padding: 65px 20px;
+  }
+
+  .hero-label {
+    font-size: 10px;
+
+    letter-spacing: 1.5px;
+  }
+
+  .hero h1 {
+    font-size: 47px;
+  }
+
+  .hero-content > p {
+    font-size: 16px;
+  }
+
+  .hero-description {
+    font-size: 14px !important;
+  }
+
+  .hero-buttons {
+    align-items: stretch;
+
+    flex-direction: column;
+  }
+
+  .hero-button {
+    text-align: center;
+  }
+
+  .hero-link {
+    margin: 10px 0 0;
+
+    text-align: center;
+  }
+
+
+  /* Home */
+
+  .home-placeholder {
+    padding: 60px 20px;
+  }
+
+  .home-placeholder h2 {
+    font-size: 34px;
+  }
+
+
+  /* Footer */
+
+  .footer-container {
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+
+    padding: 50px 20px;
+  }
+
+  .footer-bottom {
+    padding: 20px;
+
+    flex-direction: column;
+
+    align-items: flex-start;
+  }
+}
+
+
+
+
+
+/* =========================================================
+   SPORTS AND CATEGORIES
+========================================================= */
+
+.sports-section {
+  padding: 100px 32px;
+
+  background: var(--white);
+}
+
+.section-container {
+  width: 100%;
+  max-width: 1440px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+.section-header {
+  max-width: 720px;
+
+  margin: 0 auto 55px;
+
+  text-align: center;
+}
+
+.section-label {
+  display: inline-block;
+
+  margin-bottom: 10px;
+
+  color: var(--red);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+}
+
+.section-header h2 {
+  color: var(--blue);
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: clamp(36px, 5vw, 52px);
+
+  line-height: 1.1;
+
+  text-transform: uppercase;
+}
+
+.section-header p {
+  max-width: 600px;
+
+  margin: 18px auto 0;
+
+  color: var(--gray-500);
+
+  font-size: 15px;
+
+  line-height: 1.8;
+}
+
+
+/* =========================================================
+   SPORTS GRID
+========================================================= */
+
+.sports-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap: 24px;
+}
+
+
+/* =========================================================
+   SPORT CARD
+========================================================= */
+
+.sport-card {
+  position: relative;
+
+  min-height: 270px;
+
+  overflow: hidden;
+
+  background: var(--gray-50);
+
+  border: 1px solid var(--gray-200);
+
+  border-radius: 8px;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.sport-card:hover {
+  transform: translateY(-5px);
+
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.08);
+}
+
+
+/* Barra superior */
+
+.sport-card-line {
+  width: 100%;
+  height: 7px;
+}
+
+
+/* Vermelho */
+
+.sport-card.red .sport-card-line {
+  background: var(--red);
+}
+
+.sport-card.red .sport-type {
+  color: var(--red);
+}
+
+
+/* Azul */
+
+.sport-card.blue .sport-card-line {
+  background: var(--blue);
+}
+
+.sport-card.blue .sport-type {
+  color: var(--blue);
+}
+
+
+/* Verde */
+
+.sport-card.green .sport-card-line {
+  background: var(--green);
+}
+
+.sport-card.green .sport-type {
+  color: var(--green);
+}
+
+
+/* Conteúdo */
+
+.sport-card-content {
+  padding: 35px 30px;
+}
+
+.sport-type {
+  font-size: 10px;
+
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+
+  text-transform: uppercase;
+}
+
+.sport-card h3 {
+  margin-top: 12px;
+
+  color: var(--gray-900);
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: 30px;
+
+  line-height: 1.1;
+
+  text-transform: uppercase;
+}
+
+.sport-card p {
+  margin-top: 18px;
+
+  color: var(--gray-500);
+
+  font-size: 14px;
+
+  line-height: 1.7;
+}
+
+
+/* =========================================================
+   REGISTRATION NOTICE
+========================================================= */
+
+.registration-notice {
+  margin-top: 45px;
+
+  padding: 35px;
+
+  background: var(--blue-light);
+
+  border-left: 6px solid var(--red);
+
+  border-radius: 6px;
+}
+
+.notice-content {
+  max-width: 900px;
+}
+
+.notice-label {
+  color: var(--red);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 2px;
+
+  text-transform: uppercase;
+}
+
+.notice-content h3 {
+  margin-top: 8px;
+
+  color: var(--blue-dark);
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: 28px;
+
+  text-transform: uppercase;
+}
+
+.notice-content p {
+  margin-top: 12px;
+
+  color: var(--gray-700);
+
+  font-size: 14px;
+
+  line-height: 1.8;
+}
+
+.notice-content strong {
+  color: var(--blue-dark);
+
+  font-weight: 800;
+}
+
+.notice-content .notice-example {
+  margin-top: 18px;
+
+  padding: 14px 18px;
+
+  background: var(--white);
+
+  border-left: 4px solid var(--green);
+
+  color: var(--green-dark);
+
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+.categories {
+  margin-top: 80px;
+}
+
+.categories-header {
+  margin-bottom: 30px;
+}
+
+.categories-header h3 {
+  color: var(--blue);
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: 38px;
+
+  text-transform: uppercase;
+}
+
+.categories-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(6, 1fr);
+
+  gap: 14px;
+}
+
+.category-card {
+  min-height: 120px;
+
+  padding: 22px 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  background: var(--white);
+
+  border: 1px solid var(--gray-200);
+
+  border-radius: 6px;
+
+  transition: 0.2s ease;
+}
+
+.category-card:hover {
+  border-color: var(--green);
+
+  background: var(--green-light);
+
+  transform: translateY(-3px);
+}
+
+.category-card span {
+  color: var(--green);
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.category-card strong {
+  color: var(--gray-900);
+
+  font-family: 'Oswald', sans-serif;
+
+  font-size: 20px;
+
+  text-transform: uppercase;
+}
+
+
+/* =========================================================
+   SPORTS / CATEGORIES MOBILE
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .sports-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .categories-grid {
+    grid-template-columns:
+      repeat(3, 1fr);
+  }
+}
+
+
+@media (max-width: 600px) {
+
+  .sports-section {
+    padding: 70px 20px;
+  }
+
+  .section-header {
+    margin-bottom: 40px;
+  }
+
+  .section-header h2 {
+    font-size: 36px;
+  }
+
+  .sport-card {
+    min-height: 230px;
+  }
+
+  .sport-card-content {
+    padding: 28px 24px;
+  }
+
+  .sport-card h3 {
+    font-size: 27px;
+  }
+
+  .registration-notice {
+    padding: 25px 20px;
+
+    border-left-width: 4px;
+  }
+
+  .notice-content h3 {
+    font-size: 24px;
+  }
+
+  .categories {
+    margin-top: 60px;
+  }
+
+  .categories-header h3 {
+    font-size: 32px;
+  }
+
+  .categories-grid {
+    grid-template-columns:
+      repeat(2, 1fr);
+  }
+
+  .category-card {
+    min-height: 105px;
+  }
+}
