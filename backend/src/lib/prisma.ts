@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client'
-import { isProduction } from '../env'
 
-// Evita criar várias instâncias do PrismaClient durante o hot-reload em
-// desenvolvimento (o tsx watch reinicia o módulo mas não o processo Node).
+// Reutiliza a mesma instância do PrismaClient em vez de criar uma nova a
+// cada import — tanto em desenvolvimento (o tsx watch reinicia o módulo mas
+// não o processo Node) como em produção no Vercel (uma função serverless
+// "quente" pode tratar vários pedidos seguidos; sem isto, cada pedido podia
+// abrir uma ligação nova à base de dados e esgotar o limite de ligações).
 declare global {
   var __prisma__: PrismaClient | undefined
 }
@@ -10,9 +12,7 @@ declare global {
 export const prisma =
   global.__prisma__ ??
   new PrismaClient({
-    log: isProduction ? ['error', 'warn'] : ['error', 'warn'],
+    log: ['error', 'warn'],
   })
 
-if (!isProduction) {
-  global.__prisma__ = prisma
-}
+global.__prisma__ = prisma

@@ -6,7 +6,7 @@ import { ApiError } from '../utils/apiError'
 import { runOrNotFound } from '../utils/prismaHelpers'
 import { validateBody } from '../middleware/validate'
 import { requireAuth } from '../middleware/auth'
-import { uploadImage, publicUrlFor } from '../middleware/upload'
+import { uploadImage, uploadBufferToBlob } from '../middleware/upload'
 
 export const galleryRouter = Router()
 
@@ -47,10 +47,12 @@ galleryRouter.post(
       throw ApiError.badRequest('É necessário enviar uma imagem.')
     }
 
+    const url = await uploadBufferToBlob('images', req.file)
+
     const image = await prisma.galleryImage.create({
       data: {
         ...req.body,
-        url: publicUrlFor(req, `images/${req.file.filename}`),
+        url,
       },
     })
 

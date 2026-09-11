@@ -6,8 +6,15 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // Ligação direta (sem pooler/pgbouncer), usada só pelo Prisma Migrate/CLI
+  // para operações de schema. Em produção, DATABASE_URL é a ligação com
+  // pooling (pgbouncer) e DATABASE_URL_UNPOOLED é a ligação direta. Usamos
+  // exatamente estes nomes porque são os que a integração Neon do Vercel
+  // Marketplace injeta automaticamente no projeto ao ligar a base de dados
+  // — ver secção "Deploy no Vercel" no README.
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 enum SportColor {

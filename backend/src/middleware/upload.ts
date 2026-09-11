@@ -1,8 +1,6 @@
-import fs from 'node:fs'
-import path from 'node:path'
 import crypto from 'node:crypto'
 import multer from 'multer'
-import { env } from '../env'
+import { put } from '@vercel/blob'
 
 const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 const DOCUMENT_TYPES = [
@@ -11,27 +9,15 @@ const DOCUMENT_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ]
 
-function ensureDir(dir: string) {
-  fs.mkdirSync(dir, { recursive: true })
-}
+// Em serverless (Vercel) não há disco persistente entre pedidos, por isso os
+// ficheiros ficam apenas em memória durante o pedido (multer.memoryStorage)
+// e são depois enviados para o Vercel Blob em uploadBufferToBlob — nunca
+// gravados localmente.
+const memoryStorage = multer.memoryStorage()
 
-function makeStorage(subfolder: string) {
-  const dir = path.join(process.cwd(), env.uploadDir, subfolder)
-  ensureDir(dir)
-
-  return multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, dir),
-    filename: (_req, file, cb) => {
-      const unique = crypto.randomBytes(8).toString('hex')
-      const extension = path.extname(file.originalname).toLowerCase()
-      cb(null, `${Date.now()}-${unique}${extension}`)
-    },
-  })
-}
-
-// Upload de imagens (galeria, logótipos de clubes/parceiros, capas de notícias)
+// Upload de imagens (galeria, logótipos de parceiros, capas de notícias)
 export const uploadImage = multer({
-  storage: makeStorage('images'),
+  storage: memoryStorage,
   limits: { fileSize: 8 * 1024 * 1024 }, // 8MB
   fileFilter: (_req, file, cb) => {
     if (!IMAGE_TYPES.includes(file.mimetype)) {
@@ -44,7 +30,7 @@ export const uploadImage = multer({
 
 // Upload de documentos (estatutos, regulamentos, fichas)
 export const uploadDocument = multer({
-  storage: makeStorage('documents'),
+  storage: memoryStorage,
   limits: { fileSize: 15 * 1024 * 1024 }, // 15MB
   fileFilter: (_req, file, cb) => {
     if (!DOCUMENT_TYPES.includes(file.mimetype)) {
@@ -55,7 +41,23 @@ export const uploadDocument = multer({
   },
 })
 
-export function publicUrlFor(req: { protocol: string; get: (name: string) => string | undefined }, relativePath: string) {
-  const host = req.get('host')
-  return `${req.protocol}://${host}/uploads/${relativePath}`
+// Envia um ficheiro já recebido pelo multer (em memória) para o Vercel Blob
+// e devolve o URL público definitivo. `subfolder` organiza os ficheiros por
+// tipo (images/documents) dentro do Blob store. Requer a variável de
+// ambiente BLOB_READ_WRITE_TOKEN (criada automaticamente ao ligar um Vercel
+// Blob store ao projeto).
+export async function uploadBufferToBlob(
+  subfolder: 'images' | 'documents',
+  file: Express.Multer.File,
+): Promise<string> {
+  const unique = crypto.randomBytes(8).toString('hex')
+  const extension = file.originalname.includes('.') ? file.originalname.split('.').pop() : undefined
+  const pathname = `${subfolder}/${Date.now()}-${unique}${extension ? `.${extension}` : ''}`
+
+  const blob = await put(pathname, file.buffer, {
+    access: 'public',
+    contentType: file.mimetype,
+  })
+
+  return blob.url
 }

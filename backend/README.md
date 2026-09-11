@@ -12,12 +12,6 @@ da Associação Provincial de Sambo e Kurash do Icolo e Bengo.
 - **Multer** para upload de ficheiros (documentos e imagens)
 - **express-rate-limit** para proteger endpoints públicos de escrita
 
-> Nota: este projeto foi escrito neste ambiente sem acesso à internet, pelo
-> que **não foi possível correr `npm install` nem testar a execução real
-> aqui**. O código foi escrito e revisto com cuidado, mas corra os passos de
-> verificação abaixo (`npm run build`, `npm run dev`, testar os endpoints)
-> antes de dar como garantido que está tudo perfeito.
-
 ## Configuração inicial
 
 ### 1. Base de dados PostgreSQL
@@ -112,8 +106,12 @@ src/
   middleware/           autenticação, validação, upload, erros, rate limit
   routes/               um ficheiro por recurso (sports, athletes, news, ...)
   utils/                helpers (ApiError, asyncHandler, ...)
-uploads/                ficheiros carregados (documentos e imagens)
+api/index.ts            ponto de entrada usado pelo Vercel (serverless)
 ```
+
+Os ficheiros carregados (documentos, imagens da galeria, logótipos de
+parceiros) são guardados no **Vercel Blob**, não em disco local — por isso
+não há pasta `uploads/`.
 
 ## Endpoints principais
 
@@ -168,13 +166,44 @@ E use o `axios` (já está instalado no frontend) para substituir os dados
 fixos em `src/data/content.ts` por chamadas a estes endpoints. Posso ajudar
 nesse próximo passo quando quiser.
 
+## Deploy no Vercel
+
+Este backend está preparado para correr como Serverless Function no Vercel
+(`api/index.ts` + `vercel.json`), na mesma conta onde já está o frontend.
+
+Resumo dos passos (ver o guia completo enviado no chat, em formato de
+página, para o detalhe de cada um):
+
+1. Cria um **novo projeto Vercel** a partir do mesmo repositório Git, com
+   "Root Directory" definido como `backend` (o frontend continua noutro
+   projeto Vercel, a apontar para a raiz do repositório).
+2. Nota: a "Vercel Postgres" antiga já não existe — hoje liga-se uma base
+   de dados através do **Vercel Marketplace** (ex: integração Neon). Ao
+   instalar e ligar ao projeto, isto define automaticamente
+   `DATABASE_URL` (ligação com pooling) e `DATABASE_URL_UNPOOLED` (ligação
+   direta) — exatamente os nomes já usados em `schema.prisma`, sem
+   necessidade de mapear nada à mão.
+3. Cria um **Vercel Blob store** (Storage → Create Database → Blob) e
+   liga-o ao projeto (aba "Projects" do store → "Connect to Project"). Em
+   produção isto autentica por OIDC automaticamente; localmente, copia o
+   `BLOB_READ_WRITE_TOKEN` que o store mostra nas suas definições para o
+   `.env` local (já está preparado em `.env.example`).
+4. Define as restantes variáveis de ambiente do projeto (`JWT_SECRET`,
+   `JWT_EXPIRES_IN`, `CORS_ORIGIN` com o domínio do frontend em produção,
+   `ADMIN_SEED_*`).
+5. Corre `npx prisma migrate deploy` e `npm run seed` localmente, apontados
+   à base de dados de produção (usando o `DATABASE_URL_UNPOOLED` do
+   Marketplace como `DIRECT_URL`/ligação direta), para criar as tabelas e
+   a primeira conta de administrador.
+6. Faz deploy do projeto backend no Vercel.
+7. No projeto do **frontend**, define `VITE_API_URL` para o domínio do
+   backend (ex: `https://apskib-backend.vercel.app/api`) e volta a fazer
+   deploy.
+
 ## Segurança — antes de publicar em produção
 
 - Gere um `JWT_SECRET` forte e mantenha-o fora do controlo de versões.
 - Mude a password da conta de administrador criada pelo `seed` assim que
-  fizer login pela primeira vez.
-- Ajuste `CORS_ORIGIN` para o domínio real do site em produção.
-- Considere mover os uploads (`/uploads`) para um serviço de armazenamento
-  externo (ex: S3, Cloudflare R2) em vez de disco local, especialmente se o
-  servidor correr em múltiplas instâncias ou em plataformas com sistema de
-  ficheiros efémero (ex: Render, Railway sem volume persistente).
+  fizer login pela primeira vez (painel admin → "A minha conta").
+- Ajuste `CORS_ORIGIN` para o domínio real do site em produção (não deixes
+  só `localhost`).

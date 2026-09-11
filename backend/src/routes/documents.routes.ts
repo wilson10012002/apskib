@@ -6,7 +6,7 @@ import { ApiError } from '../utils/apiError'
 import { runOrNotFound } from '../utils/prismaHelpers'
 import { validateBody } from '../middleware/validate'
 import { requireAuth } from '../middleware/auth'
-import { uploadDocument, publicUrlFor } from '../middleware/upload'
+import { uploadDocument, uploadBufferToBlob } from '../middleware/upload'
 
 export const documentsRouter = Router()
 
@@ -35,10 +35,12 @@ documentsRouter.post(
       throw ApiError.badRequest('É necessário enviar um ficheiro.')
     }
 
+    const fileUrl = await uploadBufferToBlob('documents', req.file)
+
     const document = await prisma.documentFile.create({
       data: {
         ...req.body,
-        fileUrl: publicUrlFor(req, `documents/${req.file.filename}`),
+        fileUrl,
         fileType: req.file.mimetype,
         fileSize: req.file.size,
       },

@@ -1,4 +1,3 @@
-import path from 'node:path'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
@@ -64,9 +63,9 @@ export function createApp() {
     app.use(morgan('dev'))
   }
 
-  // Ficheiros carregados (documentos, imagens da galeria, logótipos)
-  app.use('/uploads', express.static(path.join(process.cwd(), env.uploadDir)))
-
+  // Os ficheiros carregados (documentos, imagens da galeria, logótipos)
+  // ficam no Vercel Blob (ver middleware/upload.ts), não em disco local —
+  // por isso já não há aqui nenhuma pasta /uploads estática para servir.
   app.use('/api', apiRouter)
 
   app.use(notFoundHandler)

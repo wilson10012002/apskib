@@ -5,7 +5,7 @@ import { asyncHandler } from '../utils/asyncHandler'
 import { runOrNotFound } from '../utils/prismaHelpers'
 import { validateBody } from '../middleware/validate'
 import { requireAuth } from '../middleware/auth'
-import { uploadImage, publicUrlFor } from '../middleware/upload'
+import { uploadImage, uploadBufferToBlob } from '../middleware/upload'
 
 export const partnersRouter = Router()
 
@@ -32,7 +32,7 @@ partnersRouter.post(
   uploadImage.single('logo'),
   validateBody(partnerSchema),
   asyncHandler(async (req, res) => {
-    const logoUrl = req.file ? publicUrlFor(req, `images/${req.file.filename}`) : undefined
+    const logoUrl = req.file ? await uploadBufferToBlob('images', req.file) : undefined
 
     const partner = await prisma.partner.create({
       data: { ...req.body, logoUrl },
@@ -48,7 +48,7 @@ partnersRouter.put(
   uploadImage.single('logo'),
   validateBody(partnerSchema.partial()),
   asyncHandler(async (req, res) => {
-    const logoUrl = req.file ? publicUrlFor(req, `images/${req.file.filename}`) : undefined
+    const logoUrl = req.file ? await uploadBufferToBlob('images', req.file) : undefined
 
     const partner = await runOrNotFound(
       prisma.partner.update({

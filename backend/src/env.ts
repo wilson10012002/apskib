@@ -18,7 +18,6 @@ export const env = {
     .split(',')
     .map((origin) => origin.trim())
     .filter(Boolean),
-  uploadDir: process.env.UPLOAD_DIR ?? 'uploads',
 }
 
 export const isProduction = env.nodeEnv === 'production'
