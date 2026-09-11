@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { MapPin, Phone, Mail } from 'lucide-react'
+import { contactInfo } from '../../../data/content'
 
 
 export default function Footer() {
@@ -9,8 +11,6 @@ export default function Footer() {
 
         {/* Brand */}
         <div className="footer-brand">
-
-        
 
         <h3>
             Associação Provincial de
@@ -78,27 +78,33 @@ export default function Footer() {
           <h4>Contactos</h4>
 
           <p>
-            map
+            <MapPin size={16} />
             <span>
-              Zango II, Calumbo
-              <br />
-              Icolo e Bengo, Angola
+              {contactInfo.addressLines.map((line) => (
+                <span key={line}>
+                  {line}
+                  <br />
+                </span>
+              ))}
             </span>
           </p>
 
           <p>
-            p
+            <Phone size={16} />
             <span>
-              +244 924 718 752
-              <br />
-              +244 953 270 383
+              {contactInfo.phones.map((phone, index) => (
+                <span key={phone}>
+                  {phone}
+                  {index < contactInfo.phones.length - 1 && <br />}
+                </span>
+              ))}
             </span>
           </p>
 
           <p>
-            m
+            <Mail size={16} />
             <span>
-              apskibengo@gmail.com
+              {contactInfo.email}
             </span>
           </p>
         </div>

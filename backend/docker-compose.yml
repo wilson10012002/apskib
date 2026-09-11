@@ -1,0 +1,15 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: apskib
+      POSTGRES_PASSWORD: apskib
+      POSTGRES_DB: apskib
+    ports:
+      - "5432:5432"
+    volumes:
+      - apskib_db_data:/var/lib/postgresql/data
+
+volumes:
+  apskib_db_data:

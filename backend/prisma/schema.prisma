@@ -1,0 +1,290 @@
+// Schema da base de dados da APSKIB.
+// Documentação: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SportColor {
+  red
+  blue
+  green
+}
+
+enum AthleteStatus {
+  pending
+  approved
+  rejected
+}
+
+enum ClubStatus {
+  pending
+  approved
+  rejected
+}
+
+enum CompetitionStatus {
+  scheduled
+  completed
+}
+
+// -----------------------------------------------------------------------
+// Administração
+// -----------------------------------------------------------------------
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("admin_users")
+}
+
+// -----------------------------------------------------------------------
+// Modalidades e categorias (dados de referência)
+// -----------------------------------------------------------------------
+
+model Sport {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  color       SportColor
+  description String
+  rules       String[] @default([])
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  athletes AthleteSport[]
+  results  Result[]
+
+  @@map("sports")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  label     String
+  ageRange  String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  athletes Athlete[]
+  results  Result[]
+  rankings RankingEntry[]
+
+  @@map("categories")
+}
+
+// -----------------------------------------------------------------------
+// Clubes
+// -----------------------------------------------------------------------
+
+model Club {
+  id           String     @id @default(cuid())
+  name         String
+  city         String?
+  contactName  String?
+  contactEmail String?
+  contactPhone String?
+  logoUrl      String?
+  status       ClubStatus @default(pending)
+  notes        String?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  athletes Athlete[]
+
+  @@map("clubs")
+}
+
+// -----------------------------------------------------------------------
+// Atletas (inclui os pedidos vindos do formulário público de inscrição)
+// -----------------------------------------------------------------------
+
+model Athlete {
+  id            String        @id @default(cuid())
+  fullName      String
+  birthDate     DateTime
+  gender        String
+  phone         String
+  email         String
+  status        AthleteStatus @default(pending)
+  acceptedTerms Boolean       @default(false)
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  clubId   String?
+  club     Club?   @relation(fields: [clubId], references: [id], onDelete: SetNull)
+  clubName String? // texto livre, usado quando o clube ainda não existe na base de dados
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  // Competição para a qual esta inscrição foi feita (o formulário público de
+  // inscrição exige sempre uma competição agendada; nullable para permitir
+  // registos antigos/administrativos sem competição associada).
+  competitionId String?
+  competition   Competition? @relation(fields: [competitionId], references: [id], onDelete: SetNull)
+
+  sports   AthleteSport[]
+  results  Result[]
+  rankings RankingEntry[]
+
+  @@map("athletes")
+}
+
+// Tabela de junção Atleta <-> Modalidade (um atleta pode praticar até 2: uma de Sambo + Kurash)
+model AthleteSport {
+  athleteId String
+  sportId   String
+
+  athlete Athlete @relation(fields: [athleteId], references: [id], onDelete: Cascade)
+  sport   Sport   @relation(fields: [sportId], references: [id], onDelete: Cascade)
+
+  @@id([athleteId, sportId])
+  @@map("athlete_sports")
+}
+
+// -----------------------------------------------------------------------
+// Competições, resultados e ranking
+// -----------------------------------------------------------------------
+
+model Competition {
+  id            String            @id @default(cuid())
+  title         String
+  date          String // texto livre, ex: "12–13 Setembro 2026"
+  location      String
+  categoryLabel String // ex: "Campeonato Provincial"
+  status        CompetitionStatus @default(scheduled)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  results       Result[]
+  registrations Athlete[]
+
+  @@map("competitions")
+}
+
+model Result {
+  id            String   @id @default(cuid())
+  competitionId String
+  competition   Competition @relation(fields: [competitionId], references: [id], onDelete: Cascade)
+
+  sportId String?
+  sport   Sport?  @relation(fields: [sportId], references: [id], onDelete: SetNull)
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  athleteId String?
+  athlete   Athlete? @relation(fields: [athleteId], references: [id], onDelete: SetNull)
+
+  athleteName String // nome a mostrar (permite registar resultados de atletas ainda não federados no sistema)
+  position    Int
+  notes       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("results")
+}
+
+model RankingEntry {
+  id          String   @id @default(cuid())
+  athleteId   String?
+  athlete     Athlete? @relation(fields: [athleteId], references: [id], onDelete: SetNull)
+  athleteName String
+  clubName    String?
+  points      Int      @default(0)
+
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ranking_entries")
+}
+
+// -----------------------------------------------------------------------
+// Notícias, parceiros, documentos e multimédia
+// -----------------------------------------------------------------------
+
+model NewsPost {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  excerpt       String
+  content       String
+  coverImageUrl String?
+  published     Boolean   @default(false)
+  publishedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("news_posts")
+}
+
+model Partner {
+  id        String   @id @default(cuid())
+  name      String
+  logoUrl   String?
+  website   String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("partners")
+}
+
+model DocumentFile {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String
+  fileUrl     String
+  fileType    String
+  fileSize    Int
+  uploadedAt  DateTime @default(now())
+
+  @@map("document_files")
+}
+
+model GalleryImage {
+  id         String   @id @default(cuid())
+  url        String
+  caption    String?
+  featured   Boolean  @default(false)
+  order      Int      @default(0)
+  uploadedAt DateTime @default(now())
+
+  @@map("gallery_images")
+}
+
+// -----------------------------------------------------------------------
+// Contacto
+// -----------------------------------------------------------------------
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}

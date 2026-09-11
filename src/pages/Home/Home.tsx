@@ -1,25 +1,19 @@
 import Hero from '../../components/home/Hero/Hero'
 import SportsAndCategories from '../../components/home/SportsAndCategories/SportsAndCategories'
+import UpcomingCompetitions from '../../components/home/upcomingCompetitions/UpcomingCompetitions'
+import { useFetch } from '../../hooks/useFetch'
+import { competitionsApi } from '../../lib/api'
 
 export default function Home() {
+  const { data: competitions, loading, error } = useFetch(competitionsApi.list, [])
+
   return (
     <>
-      <Hero />
+      <Hero nextCompetition={competitions?.[0]} />
 
       <SportsAndCategories />
 
-      <section className="home-placeholder">
-        <div>
-          <span>APSKIB</span>
-
-          <h2>Próximas Competições</h2>
-
-          <p>
-            Em breve poderá consultar aqui
-            todas as competições da APSKIB.
-          </p>
-        </div>
-      </section>
+      <UpcomingCompetitions competitions={competitions} loading={loading} error={error} />
     </>
   )
 }
